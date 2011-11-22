@@ -1,0 +1,37 @@
+h1. loquat
+
+h2. About
+
+Supports conversion from wxruby script to exe
+Need exerb
+solve a problem about the use of gem when converting to exe by exerb
+Hiding the DOS window when running GUI
+Reappear when an Exception
+
+h2. How to Use
+
+Enter the following command:
+  loquat build any.rb
+
+The following output files
+* Any
+* Any.exy
+* Any.exe
+
+h2. 概要
+
+wxruby script から exe への変換をサポート
+exerb が必要
+exerb で exe に変換する際に問題となる gem 利用を程度解決
+GUI実行時のDOS画面非表示化
+Exception 発生時に再表示
+
+h2. 使用方法
+
+以下のコマンドを入力
+  loquat build any.rb
+
+以下のファイルを出力
+* any
+* any.exy
+* any.exe
