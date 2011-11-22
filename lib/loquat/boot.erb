@@ -1,0 +1,54 @@
+#!ruby -Ku
+# -*- encoding: UTF-8 -*-
+
+require 'Win32API' #exerb に含ませる必要がある
+
+# gui向けに画面を消去
+# http://loquat-wxruby.blogspot.com/2011/10/ruby-gui.html
+get_console_window = Win32API.new("kernel32" , "GetConsoleWindow" , [] , 'L')
+show_window = Win32API.new( "user32" , "ShowWindow" , ['p' , 'i'] , 'i' )
+hwnd = get_console_window.call()
+
+# 実際に消去するのは exe 化されている時だけ
+show_window.call( hwnd , 0 ) if $Exerb
+
+# 単体実行のためのファイル
+
+# mkexy 向け処理
+# ファイルフルパス指定しているgemがいると、mkexy で作成されるレシピファイルで問題になる
+module Kernel
+  alias require_old require 
+  def require(path)
+    new_path = path
+    if $Exerb
+      return if !path or path.match(/rubygems/) # exerb での実行時は rubygems 使わない
+      
+      # フルパス変換してrequireしている gems 用に、exerbパスになるよう置換
+      new_path = new_path.gsub(File.dirname(ExerbRuntime.filepath), "")
+      new_path = new_path.gsub(Dir.pwd + "/", "")
+      new_path = new_path.gsub("./", "")
+    else
+      new_path = path.gsub(/c:.*\/1\.8\/gems\/.*lib\//i, "")
+    end
+    
+    # 置換された場合の確認処理( デバッグ用 )
+    # p [new_path, path] if path != new_path
+    
+    # 実際の require 処理
+    require_old new_path
+  end
+end
+
+# 不正落ちした場合には、画面を再度表示してエラーメッセージを確認できるようにする
+begin
+  require "<%=src%>"
+rescue Exception
+  puts $!.message
+  puts $!.backtrace
+  if $Exerb
+    show_window.call( hwnd , 1 )
+    puts ""
+    puts "press eny key to continue"
+    $stdin.gets
+  end
+end
