@@ -10,7 +10,7 @@ require "erb"
 class LoquatCli < Thor
   namespace :loquat
 
-  desc "build src", "exe化"
+  desc "build src [options]", "exe化"
   # options related to exerb command
   method_option :outfile, :type => :string, :aliases => "-o", :desc => "specifies output file."
   method_option :corename, :type => :string, :aliases => "-c", :desc => "specifies exerb-core by defined name."
